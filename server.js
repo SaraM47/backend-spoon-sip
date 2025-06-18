@@ -26,6 +26,11 @@ app.use('/api/contact', contactRoutes);
 // Connect to the MongoDB database
 connectDB();
 
+// Basic route to verify API is live
+app.get('/', (req, res) => {
+    res.send('Spoon & Sip API is running');
+  });
+
 // Start the server on specified port and log the status
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
