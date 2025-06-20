@@ -76,6 +76,10 @@ exports.deleteReview = async (req, res) => {
   try {
     const review = await Review.findById(req.params.id);
     if (!review) return res.status(404).json({ message: 'Review not found' });
+    
+    if (!req.user) {
+      return res.status(401).json({ message: 'No user info from token' });
+    }
 
     const isOwner = review.userId.toString() === req.user.userId;
     const isAdmin = req.user.role === 'admin';
