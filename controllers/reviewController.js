@@ -28,6 +28,16 @@ exports.getReviewsByMenuItem = async (req, res) => {
   }
 };
 
+// Fetch latest reviews for homepage
+exports.getAllReviews = async (req, res) => {
+  try {
+    const reviews = await Review.find().sort({ createdAt: -1 }).limit(6);
+    res.json(reviews);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch reviews' });
+  }
+};
+
 // Check if the current user has already submitted a review
 exports.checkReview = async (req, res) => {
   try {

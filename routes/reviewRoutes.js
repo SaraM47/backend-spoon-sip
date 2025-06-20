@@ -4,6 +4,9 @@ const reviewController = require('../controllers/reviewController');
 const verifyToken = require('../middleware/verifyToken');
 
 
+// GET all reviews (e.g. for homepage)
+router.get('/', reviewController.getAllReviews);
+
 // Check if the user has already reviewed a specific product
 router.get('/check/:productId', verifyToken, reviewController.checkReview);
 
