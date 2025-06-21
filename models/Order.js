@@ -5,6 +5,13 @@ const orderSchema = new mongoose.Schema({
   customerName: { type: String, required: true },
   phone: { type: String, required: true },
   time: { type: Date, required: true },
+
+  // Individuel choice
+  acai: { type: mongoose.Schema.Types.ObjectId, ref: 'MenuItem', required: false },
+  smoothie: { type: mongoose.Schema.Types.ObjectId, ref: 'MenuItem', required: false },
+  juice: { type: mongoose.Schema.Types.ObjectId, ref: 'MenuItem', required: false },
+
+  // Automatically generated menu field for receipt/stats
   menuItemIds: [{ type: mongoose.Schema.Types.ObjectId, ref: 'MenuItem' }],
   status: { // Order status (default is pending)
     type: String,
