@@ -4,13 +4,11 @@ const Order = require("../models/Order");
 // POST – Create a new order and generate an English receipt
 exports.createOrder = async (req, res) => {
   try {
-    const { customerName, phone, time, acai, smoothie, juice } = req.body;
+    const { customerName, phone, time, menuItemIds } = req.body;
 
-    // Collect selected menu items
-    const menuItemIds = [];
-    if (acai) menuItemIds.push(acai);
-    if (smoothie) menuItemIds.push(smoothie);
-    if (juice) menuItemIds.push(juice);
+    if (!menuItemIds || menuItemIds.length === 0) {
+      return res.status(400).json({ message: "At least one menu item must be selected." });
+    }
 
     const order = new Order({
       customerName,
@@ -31,21 +29,21 @@ exports.createOrder = async (req, res) => {
     const total = order.menuItemIds.reduce((sum, item) => sum + item.price, 0);
 
     const receipt = `
-  Thank you for your order, ${order.customerName}!
-  
-  Order ID: ${order._id}
-  Pickup time: ${new Date(order.time).toLocaleString("en-GB", {
-    timeZone: "Europe/Stockholm",
-  })}
-  
-  Ordered items:
-  ${items}
-  
-  Total: ${total} SEK
-  We will contact you at: ${order.phone}
-  
-  Welcome back, wishes Spoon & Sip!
-      `.trim();
+Thank you for your order, ${order.customerName}!
+
+Order ID: ${order._id}
+Pickup time: ${new Date(order.time).toLocaleString("en-GB", {
+  timeZone: "Europe/Stockholm",
+})}
+
+Ordered items:
+${items}
+
+Total: ${total} SEK
+We will contact you at: ${order.phone}
+
+Welcome back, wishes Spoon & Sip!
+    `.trim();
 
     res.status(201).json({ order, receipt });
   } catch (err) {
@@ -54,6 +52,7 @@ exports.createOrder = async (req, res) => {
       .json({ message: "Order creation failed", error: err.message });
   }
 };
+
 
 // GET – Fetch all orders, sorted by latest
 exports.getOrders = async (req, res) => {
