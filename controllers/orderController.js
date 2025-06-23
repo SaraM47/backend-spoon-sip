@@ -4,7 +4,7 @@ const Order = require("../models/Order");
 // POST – Create a new order and generate an English receipt
 exports.createOrder = async (req, res) => {
   try {
-    const { customerName, phone, time, menuItemIds } = req.body;
+    const { customerName, phone, time, people, note, menuItemIds } = req.body;
 
     if (!menuItemIds || menuItemIds.length === 0) {
       return res.status(400).json({ message: "At least one menu item must be selected." });
@@ -14,6 +14,8 @@ exports.createOrder = async (req, res) => {
       customerName,
       phone,
       time,
+      people,
+      note,
       menuItemIds,
       status: "pending",
     });
