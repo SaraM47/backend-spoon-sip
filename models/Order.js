@@ -5,6 +5,8 @@ const orderSchema = new mongoose.Schema({
   customerName: { type: String, required: true },
   phone: { type: String, required: true },
   time: { type: Date, required: true },
+  people: { type: Number },
+  note: { type: String }, 
 
   // Individuel choice
   acai: { type: mongoose.Schema.Types.ObjectId, ref: 'MenuItem', required: false },
