@@ -14,6 +14,8 @@ router.post(
     body("menuItemIds")
       .isArray({ min: 1 })
       .withMessage("At least one menu item must be selected"),
+      body("people").optional().isInt({ min: 1 }).withMessage("People must be a number"),
+      body("note").optional().isString().trim(),
   ],
   orderController.createOrder
 );
