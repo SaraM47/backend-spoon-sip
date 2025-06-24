@@ -3,25 +3,27 @@ const Review = require('../models/Review');
 // Create a new review from a logged-in user
 exports.createReview = async (req, res) => {
   try {
-    const { name, rating, comment } = req.body;
+    const { menuItemId, name, rating, comment } = req.body;
+
+    if (!name || !rating || !comment) {
+      return res.status(400).json({ message: 'Missing required fields' });
+    }
 
     const review = new Review({
+      menuItemId: menuItemId || null, // accept null if tehre no sending 
       name,
       rating,
       comment,
-      menuItemId: null,
-      userId: null,
+      userId: req.user?.userId || null, // if only token exists
     });
 
     await review.save();
     res.status(201).json(review);
   } catch (err) {
-    res.status(400).json({
-      message: 'Failed to create review',
-      error: err.message,
-    });
+    res.status(400).json({ message: 'Failed to create review', error: err.message });
   }
 };
+
 
 // Fetch all reviews for a specific menu item
 exports.getReviewsByMenuItem = async (req, res) => {
