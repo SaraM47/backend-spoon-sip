@@ -16,8 +16,8 @@ router.put('/review/:id', verifyToken, reviewController.updateReview);
 // Delete a review – user must be logged in
 router.delete('/review/:id', verifyToken, reviewController.deleteReview);
 
-// Create a new review – only accessible to logged-in users
-router.post('/', verifyToken, reviewController.createReview);
+// Create a new review - allows anyone
+router.post('/', reviewController.createReview);
 
 // Get all reviews for a specific menu item
 router.get('/:menuItemId', reviewController.getReviewsByMenuItem);
