@@ -3,25 +3,23 @@ const Review = require('../models/Review');
 // Create a new review from a logged-in user
 exports.createReview = async (req, res) => {
   try {
-    const { menuItemId, name, rating, comment } = req.body;
+    const { name, rating, comment } = req.body;
 
     const review = new Review({
-      menuItemId: menuItemId || null,
-      userId: req.user?.userId || null,
       name,
       rating,
-      comment
+      comment,
+      menuItemId: null,
+      userId: null,
     });
-
-    // Only add userId if it exists (logged in)
-    if (req.user?.userId) {
-      review.userId = req.user.userId;
-    }
 
     await review.save();
     res.status(201).json(review);
   } catch (err) {
-    res.status(400).json({ message: 'Failed to create review', error: err.message });
+    res.status(400).json({
+      message: 'Failed to create review',
+      error: err.message,
+    });
   }
 };
 
