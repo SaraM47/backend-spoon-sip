@@ -6,10 +6,11 @@ exports.createReview = async (req, res) => {
     const { menuItemId, name, rating, comment } = req.body;
 
     const review = new Review({
-      menuItemId,
+      menuItemId: menuItemId || null,
+      userId: req.user?.userId || null,
       name,
       rating,
-      comment,
+      comment
     });
 
     // Only add userId if it exists (logged in)
