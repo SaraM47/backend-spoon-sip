@@ -4,14 +4,20 @@ const ContactMessage = require('../models/ContactMessage');
 exports.createMessage = async (req, res) => {
   try {
     const { name, email, message } = req.body;
-    const newMsg = new ContactMessage({ name, email, message });
+
+    const newMsg = new ContactMessage({
+      name,
+      email,
+      message,
+      user: req.user?.userId || null,
+    });
+
     await newMsg.save();
     res.status(201).json({ message: 'Message sent successfully', data: newMsg });
   } catch (err) {
     res.status(400).json({ message: 'Failed to send message', error: err.message });
   }
 };
-
 // GET – Retrieve all contact messages (admin only)
 exports.getAllMessages = async (req, res) => {
   try {
