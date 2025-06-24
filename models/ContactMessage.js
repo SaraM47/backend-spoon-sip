@@ -3,6 +3,11 @@ const mongoose = require('mongoose');
 
 // Define schema for contact messages sent through the contact form
 const contactSchema = new mongoose.Schema({
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: false, // make it optional so guests can also send messages
+  },
   name: { type: String, required: true },
   email: { type: String, required: true },
   message: { type: String, required: true },
