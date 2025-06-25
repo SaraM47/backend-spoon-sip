@@ -5,145 +5,159 @@ This is a RESTful API built using Node.js, Express, and MongoDB. This document p
 ---
 
 ## Project Repository
-The frontend Fit repository: [Frontend-Git-repo](https://github.com/SaraM47/frontend-spoon-sip.git)
+The frontend Fit repository: [Frontend-Git-repo](https://github.com/SaraM47/frontend-spoon-sip.git).
 The frontend application that uses this API is available at: [Frontend link](https://spoon-and-sip.netlify.app/)
 
 ---
 
 ## Database Structure
 
-The API uses a NoSQL MongoDB database. The following collections are defined and actively used: Users, MenuItems, Orders, Reviews, and ContactMessages.
+The API uses a NoSQL MongoDB database. The following collections are defined and actively used: `Users`, `MenuItems`, `Orders`, `Reviews`, and `ContactMessages`.
 
 ---
 
-## Authentication Endpoints
+## Users
 
-### `POST /api/auth/register`
-- **Protected:** No
-- **Body:** `{ email: string, password: string }`
-- **Description:** Registers a new user. The password is hashed before storage. The default role assigned is `customer`.
+User accounts are registered via email and password and assigned roles such as customer or admin.
 
-### `POST /api/auth/login`
-- **Protected:** No
-- **Body:** `{ email: string, password: string }`
-- **Description:** Logs in a user and returns a JWT token that must be used in subsequent authenticated requests.
+```json
+{
+  "_id": "ObjectId",
+  "email": "string",
+  "password": "string (hashed)",
+  "role": "'customer' | 'admin'",
+  "account_created": "Date"
+}
+´´´
+Passwords are securely hashed using bcrypt before storage. New users are assigned the role "customer" by default. Admins have access to protected routes and moderation features.
 
----
+MenuItems
+Each menu item represents a product such as a smoothie, acai bowl, or juice.
 
-## User Management (Admin Only)
+```json
+{
+  "_id": "ObjectId",
+  "name": "string",
+  "price": "number",
+  "ingredients": ["string"],
+  "category": "string",
+  "image": "string (Cloudinary URL)"
+}
+´´´
+The image field contains a URL hosted by Cloudinary. Menu items can be filtered by category and are shown on the public menu page.
 
-### `GET /api/users`
-- **Protected:** Yes (Admin only)
-- **Description:** Retrieves a list of all registered users. Passwords are excluded in the returned data.
+Orders
+Orders are placed by customers through the take-away form and stored in this collection.
 
-### `DELETE /api/users/:id`
-- **Protected:** Yes (Admin only)
-- **Description:** Deletes a specific user by their ID. Admins cannot delete their own account.
+```json
+{
+  "_id": "ObjectId",
+  "customerName": "string",
+  "phone": "string",
+  "time": "Date",
+  "menuItemIds": ["ObjectId"],
+  "people": "number (optional)",
+  "note": "string (optional)",
+  "status": "'pending' | 'completed'",
+  "createdAt": "Date",
+  "updatedAt": "Date"
+}
+´´´
 
-Passwords are securely hashed using bcrypt before storage. All new users are assigned the role of `customer` by default unless explicitly set to `admin`.
+Each order references multiple menu items. A receipt is automatically generated after submission. Orders can be marked as completed or deleted by admins.
 
----
+Reviews
+Users can leave reviews on individual menu items. Each review is linked to both a menu item and a user.
 
-## Menu Management
+```json
+{
+  "_id": "ObjectId",
+  "menuItemId": "ObjectId",
+  "userId": "ObjectId",
+  "name": "string",
+  "rating": "number (1–5)",
+  "comment": "string",
+  "createdAt": "Date"
+}
+´´´
+Users can post, edit, and delete their own reviews. Admins have the ability to moderate all submitted reviews. The system prevents duplicate reviews from the same user for the same item.
 
-### `GET /api/menu`
-- **Protected:** No
-- **Description:** Returns a list of all menu items including name, price, ingredients, category, and image.
+ContactMessages
+Messages submitted via the contact form are stored here. If a user is authenticated, their userId may also be attached.
 
-### `GET /api/menu/:id`
-- **Protected:** No
-- **Description:** Returns the details of a single menu item by its ID.
+```json
+{
+  "_id": "ObjectId",
+  "userId": "ObjectId (optional)",
+  "name": "string",
+  "email": "string",
+  "message": "string",
+  "createdAt": "Date"
+}
+´´´
+Admins can view and delete these messages in the admin panel.
 
-### `POST /api/menu`
-- **Protected:** Yes (Admin only)
-- **Body:** `multipart/form-data` containing `{ name, price, ingredients[], category, image }`
-- **Description:** Adds a new menu item to the database, including uploading an image to Cloudinary.
+Unauthenticated users can also submit messages via the public contact form.
 
-### `PUT /api/menu/:id`
-- **Protected:** Yes (Admin only)
-- **Body:** Same as POST. If an image is included, it replaces the old one.
-- **Description:** Updates the details of an existing menu item.
-
-### `DELETE /api/menu/:id`
-- **Protected:** Yes (Admin only)
-- **Description:** Deletes a menu item by ID.
-
----
-
-## 📦 Order Management
-
-### `POST /api/orders`
-- **Protected:** No
-- **Body:** `{ customerName, phone, time, menuItemIds[], note?, people? }`
-- **Description:** Submits a new takeaway order. A formatted receipt is returned.
-
-### `GET /api/orders`
-- **Protected:** Yes (Admin only)
-- **Description:** Retrieves all customer orders.
-
-### `GET /api/orders/pending`
-- **Protected:** Yes (Admin only)
-- **Description:** Fetches orders that are marked as "pending".
-
-### `GET /api/orders/completed`
-- **Protected:** Yes (Admin only)
-- **Description:** Fetches orders that are marked as "completed".
-
-### `PATCH /api/orders/:id`
-- **Protected:** Yes (Admin only)
-- **Body:** `{ status: "pending" | "completed" }`
-- **Description:** Updates the status of a specific order.
-
-### `DELETE /api/orders/:id`
-- **Protected:** Yes (Admin only)
-- **Description:** Deletes an order by its ID.
-
-### `GET /api/orders/stats`
-- **Protected:** Yes (Admin only)
-- **Description:** Returns statistics such as total orders, number of pending and completed.
 
 ---
 
-## Reviews
+## API Endpoints
 
-### `POST /api/reviews`
-- **Protected:** Yes (Logged in users)
-- **Body:** `{ menuItemId, name, rating, comment }`
-- **Description:** Creates a review for a specific menu item.
+### Authentication Routes
 
-### `GET /api/reviews/:menuItemId`
-- **Protected:** No
-- **Description:** Returns all reviews for the specified menu item.
+| Method | Endpoint             | Body                       | Requires Auth | Description                        |
+|--------|----------------------|----------------------------|----------------|------------------------------------|
+| POST   | /api/auth/register   | email, password            | No             | Registers a new user account.      |
+| POST   | /api/auth/login      | email, password            | No             | Logs in a user and returns a token.|
 
-### `GET /api/reviews/check/:productId`
-- **Protected:** Yes
-- **Description:** Checks whether the current user has already reviewed the given menu item.
+### User Access
 
-### `PUT /api/reviews/review/:id`
-- **Protected:** Yes
-- **Body:** `{ rating, comment }`
-- **Description:** Allows the user to update their own review.
+| Method | Endpoint        | Requires Auth | Description                     |
+| ------ | --------------- | ------------- | ------------------------------- |
+| GET    | /api/users      | Yes (admin)   | Retrieves all registered users. |
+| DELETE | /api/users/\:id | Yes (admin)   | Deletes a specific user.        |
 
-### `DELETE /api/reviews/review/:id`
-- **Protected:** Yes (Author or Admin)
-- **Description:** Deletes the specified review. Users can delete their own, admins can delete all.
 
----
+### Menu Item Routes
 
-## Contact Messages
+| Method | Endpoint            | Body                                   | Requires Auth | Description                                        |
+|--------|---------------------|----------------------------------------|----------------|----------------------------------------------------|
+| GET    | /api/menu           | -                                      | No             | Returns all menu items.                           |
+| GET    | /api/menu/:id       | -                                      | No             | Returns one specific menu item by ID.             |
+| POST   | /api/menu           | name, price, ingredients, category, image | Yes (admin)  | Adds a new menu item with image upload support.   |
+| PUT    | /api/menu/:id       | same as above                          | Yes (admin)    | Updates a menu item.                              |
+| DELETE | /api/menu/:id       | -                                      | Yes (admin)    | Deletes a menu item.                              |
 
-### `POST /api/contact`
-- **Protected:** No
-- **Body:** `{ name, email, message }`
-- **Description:** Submits a contact message via the contact form on the frontend.
+### Order Routes
 
-### `GET /api/contact`
-- **Protected:** Yes (Admin only)
-- **Description:** Retrieves all submitted contact messages.
+| Method | Endpoint              | Body                              | Requires Auth | Description                                           |
+|--------|-----------------------|-----------------------------------|----------------|-------------------------------------------------------|
+| POST   | /api/orders           | customerName, phone, time, menuItemIds | No         | Creates a new order and returns a receipt.           |
+| GET    | /api/orders           | -                                 | Yes           | Retrieves all orders (admin only).                   |
+| GET    | /api/orders/completed| -                                 | Yes           | Retrieves all completed orders.                      |
+| GET    | /api/orders/pending  | -                                 | Yes           | Retrieves all pending orders.                        |
+| PATCH  | /api/orders/:id      | status                            | Yes           | Updates the status of a specific order.              |
+| DELETE | /api/orders/:id      | -                                 | Yes           | Deletes an order by ID.                              |
+| GET    | /api/orders/stats    | -                                 | Yes           | Returns order statistics (pending, completed, total).|
 
-### `DELETE /api/contact/:id`
-- **Protected:** Yes (Admin only)
-- **Description:** Deletes a specific contact message by ID.
+### Review Routes
+
+| Method | Endpoint                    | Body                        | Requires Auth | Description                                             |
+|--------|-----------------------------|-----------------------------|----------------|---------------------------------------------------------|
+| POST   | /api/reviews                | menuItemId, name, rating, comment | Yes       | Creates a new review.                                  |
+| GET    | /api/reviews/:menuItemId   | -                           | No             | Retrieves all reviews for a given menu item.           |
+| GET    | /api/reviews/check/:productId | -                        | Yes            | Checks if the user has already submitted a review.     |
+| PUT    | /api/reviews/review/:id    | rating, comment             | Yes            | Updates an existing review (only by the review's author). |
+| DELETE | /api/reviews/review/:id    | -                           | Yes (admin or owner) | Deletes a review.                                 |
+
+### Contact Message Routes
+
+| Method | Endpoint             | Body                   | Requires Auth | Description                              |
+|--------|----------------------|------------------------|----------------|------------------------------------------|
+| POST   | /api/contact         | name, email, message   | No             | Submits a new contact message.           |
+| GET    | /api/contact         | -                      | Yes (admin)    | Retrieves all contact messages.          |
+| DELETE | /api/contact/:id     | -                      | Yes (admin)    | Deletes a contact message by ID.         |
 
 ---
 
