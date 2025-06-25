@@ -4,13 +4,13 @@ This is a RESTful API built using Node.js, Express, and MongoDB. This document p
 
 ---
 
-## Project Repository
+## Project repository
 The frontend repository is available at: [Frontend-Git-repo](https://github.com/SaraM47/frontend-spoon-sip.git).<br/>
 The frontend application that uses this API is available at: [Frontend link](https://spoon-and-sip.netlify.app/)
 
 ---
 
-## Database Structure
+## Database structure
 
 The API uses a NoSQL MongoDB database. The following collections are defined and actively used: `Users`, `MenuItems`, `Orders`, `Reviews`, and `ContactMessages`.
 
@@ -112,7 +112,7 @@ Admins can view and delete these messages in the admin panel. Unauthenticated/pu
 | POST   | /api/auth/register   | email, password            | No             | Registers a new user account.      |
 | POST   | /api/auth/login      | email, password            | No             | Logs in a user and returns a token.|
 
-### User Access
+### User access
 
 | Method | Endpoint        | Requires Auth | Description                     |
 | ------ | --------------- | ------------- | ------------------------------- |
@@ -162,15 +162,15 @@ Admins can view and delete these messages in the admin panel. Unauthenticated/pu
 
 ---
 
-## Image Upload
+## Image upload
 
 Images for menu items are uploaded using multipart/form-data through Multer. The images are stored in Cloudinary. The field name for the image is `image`.
 
-## Roles and Access Control
+## Roles and access control
 
 The API distinguishes between two user roles: `customer` and `admin`. Customers can register, log in, place orders, and submit reviews. Admins have additional privileges such as managing menu items, viewing orders and statistics, and moderating reviews and contact messages.
 
-## Technology Stack
+## Technology stack
 
 This project is built using Node.js and Express on the backend. MongoDB is used for data storage, and Mongoose handles data modeling. Authentication is handled using JWT. Image upload is handled via `multipart/form-data` and stored in Cloudinary.
 
