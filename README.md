@@ -28,7 +28,7 @@ User accounts are registered via email and password and assigned roles such as c
   "role": "'customer' | 'admin'",
   "account_created": "Date"
 }
-´´´
+```
 Passwords are securely hashed using bcrypt before storage. New users are assigned the role "customer" by default. Admins have access to protected routes and moderation features.
 
 MenuItems
@@ -43,7 +43,7 @@ Each menu item represents a product such as a smoothie, acai bowl, or juice.
   "category": "string",
   "image": "string (Cloudinary URL)"
 }
-´´´
+```
 The image field contains a URL hosted by Cloudinary. Menu items can be filtered by category and are shown on the public menu page.
 
 Orders
@@ -62,7 +62,7 @@ Orders are placed by customers through the take-away form and stored in this col
   "createdAt": "Date",
   "updatedAt": "Date"
 }
-´´´
+```
 
 Each order references multiple menu items. A receipt is automatically generated after submission. Orders can be marked as completed or deleted by admins.
 
@@ -79,7 +79,7 @@ Users can leave reviews on individual menu items. Each review is linked to both 
   "comment": "string",
   "createdAt": "Date"
 }
-´´´
+```
 Users can post, edit, and delete their own reviews. Admins have the ability to moderate all submitted reviews. The system prevents duplicate reviews from the same user for the same item.
 
 ContactMessages
@@ -94,7 +94,7 @@ Messages submitted via the contact form are stored here. If a user is authentica
   "message": "string",
   "createdAt": "Date"
 }
-´´´
+```
 Admins can view and delete these messages in the admin panel. Unauthenticated users can also submit messages via the public contact form.
 
 ---
