@@ -5,7 +5,7 @@ This is a RESTful API built using Node.js, Express, and MongoDB. This document p
 ---
 
 ## Project Repository
-The frontend Fit repository: [Frontend-Git-repo](https://github.com/SaraM47/frontend-spoon-sip.git).
+The frontend repository is available at: [Frontend-Git-repo](https://github.com/SaraM47/frontend-spoon-sip.git).< br / >
 The frontend application that uses this API is available at: [Frontend link](https://spoon-and-sip.netlify.app/)
 
 ---
@@ -55,7 +55,7 @@ Orders are placed by customers through the take-away form and stored in this col
   "customerName": "string",
   "phone": "string",
   "time": "Date",
-  "menuItemIds": ["ObjectId"],
+  "menuItemIds": ["ObjectId (ref: MenuItem)"],
   "people": "number (optional)",
   "note": "string (optional)",
   "status": "'pending' | 'completed'",
@@ -72,8 +72,8 @@ Users can leave reviews on individual menu items. Each review is linked to both 
 ```json
 {
   "_id": "ObjectId",
-  "menuItemId": "ObjectId",
-  "userId": "ObjectId",
+  "menuItemId": "ObjectId (ref: MenuItem)",
+  "userId": "ObjectId (ref: User)",
   "name": "string",
   "rating": "number (1–5)",
   "comment": "string",
@@ -88,18 +88,22 @@ Messages submitted via the contact form are stored here. If a user is authentica
 ```json
 {
   "_id": "ObjectId",
-  "userId": "ObjectId (optional)",
+  "userId": "ObjectId (optional, populated if user is logged in)",
   "name": "string",
   "email": "string",
   "message": "string",
   "createdAt": "Date"
 }
 ```
-Admins can view and delete these messages in the admin panel. Unauthenticated users can also submit messages via the public contact form.
+Admins can view and delete these messages in the admin panel. Unauthenticated/public users can also submit messages via the public contact form.
 
 ---
 
 ## API Endpoints
+
+- Uses **JWT (JSON Web Tokens)**.
+- Tokens are passed via `Authorization: Bearer <token>` in protected routes.
+
 
 ### Authentication Routes
 
