@@ -95,10 +95,7 @@ Messages submitted via the contact form are stored here. If a user is authentica
   "createdAt": "Date"
 }
 ´´´
-Admins can view and delete these messages in the admin panel.
-
-Unauthenticated users can also submit messages via the public contact form.
-
+Admins can view and delete these messages in the admin panel. Unauthenticated users can also submit messages via the public contact form.
 
 ---
 
@@ -176,5 +173,4 @@ This project is built using Node.js and Express on the backend. MongoDB is used 
 ## Testing
 
 You can test this API using tools like Postman or Thunder Client. When calling protected routes, be sure to include a valid JWT token in the `Authorization` header in the format `Bearer <your-token>`.
-
 
