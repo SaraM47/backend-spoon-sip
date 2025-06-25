@@ -5,7 +5,7 @@ This is a RESTful API built using Node.js, Express, and MongoDB. This document p
 ---
 
 ## Project Repository
-The frontend repository is available at: [Frontend-Git-repo](https://github.com/SaraM47/frontend-spoon-sip.git).< br / >
+The frontend repository is available at: [Frontend-Git-repo](https://github.com/SaraM47/frontend-spoon-sip.git).<br/>
 The frontend application that uses this API is available at: [Frontend link](https://spoon-and-sip.netlify.app/)
 
 ---
